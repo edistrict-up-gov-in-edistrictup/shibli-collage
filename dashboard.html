@@ -20,7 +20,6 @@
     </div>
 
     <div class="dashboard-content">
-        <!-- Add Student Form -->
         <div class="form-section">
             <h3>Add New Student</h3>
             <input type="text" id="s-name" placeholder="Student Name" style="width:100%; padding:10px; margin:5px 0;">
@@ -33,7 +32,6 @@
             <button id="add-student-btn" style="width:100%; padding:10px; background:var(--primary); color:white; border:none; cursor:pointer; margin-top:10px;">Submit Student Data</button>
         </div>
 
-        <!-- Student History Table -->
         <div class="table-section">
             <h3>Student History</h3>
             <table>
@@ -49,9 +47,7 @@
         </div>
     </div>
 
-    <!-- Hidden ID Card Template for PDF Generation -->
     <div id="id-card-template">
-        <!-- Naya Logo Image Path -->
         <img src="images/default-logo.png" class="logo" alt="Logo">
         <h3 id="id-school">School Name</h3>
         <img src="" id="id-photo" class="student-photo">
@@ -62,7 +58,12 @@
     </div>
 
     <script>
-        function toggleTheme() { document.body.classList.toggle('dark-mode'); }
+        function toggleTheme() { 
+            document.body.classList.toggle('dark-mode'); 
+            localStorage.setItem('theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');
+        }
+        if(localStorage.getItem('theme') === 'dark') document.body.classList.add('dark-mode');
+
         function logout() { sessionStorage.removeItem('isLoggedIn'); window.location.href = 'index.html'; }
     </script>
     <script type="module" src="js/dashboard.js"></script>
