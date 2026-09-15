@@ -12,7 +12,7 @@ function generateCaptcha() {
 
 window.onload = generateCaptcha;
 
-// REGISTER
+// REGISTER LOGIC
 document.getElementById('register-btn').addEventListener('click', async () => {
     const name = document.getElementById('reg-name').value;
     const dob = document.getElementById('reg-dob').value;
@@ -55,7 +55,7 @@ document.getElementById('register-btn').addEventListener('click', async () => {
     }
 });
 
-// LOGIN
+// LOGIN LOGIC
 document.getElementById('login-btn').addEventListener('click', async () => {
     const mobile = document.getElementById('login-mobile').value;
     const pass = document.getElementById('login-password').value;
