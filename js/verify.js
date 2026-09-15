@@ -1,5 +1,6 @@
 import { db } from "./firebase-config.js";
-import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+// Naya Firebase version 12.19.0 update kiya gaya hai
+import { doc, getDoc } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
 
 async function verifyStudent() {
     // URL se ?id=xxxxx nikalna
