@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>College Portal Login</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+    <button class="theme-switch" onclick="toggleTheme()">🌓 Theme</button>
+    
+    <div class="auth-container" id="login-box">
+        <!-- Naya Logo Image Path -->
+        <div style="text-align: center;"><img src="images/default-logo.png" alt="Logo" width="80"></div>
+        <h2>Login</h2>
+        <input type="number" id="login-mobile" placeholder="Mobile Number">
+        <input type="password" id="login-password" placeholder="Password">
+        <div style="margin-top: 10px;">
+            <span id="login-captcha-text" style="font-weight: bold; font-size: 18px;"></span>
+            <input type="number" id="login-captcha-input" placeholder="Solve Math">
+        </div>
+        <button id="login-btn">Secure Login</button>
+        <div class="toggle-link" onclick="toggleAuth()">New User? Register Here</div>
+    </div>
+
+    <div class="auth-container" id="register-box" style="display: none;">
+        <h2>Register</h2>
+        <input type="text" id="reg-name" placeholder="Full Name">
+        <input type="date" id="reg-dob" placeholder="DOB">
+        <input type="number" id="reg-mobile" placeholder="Mobile Number (Used for Login)">
+        <input type="password" id="reg-pass" placeholder="Password">
+        <input type="password" id="reg-confirm-pass" placeholder="Confirm Password">
+        <button id="register-btn">Register</button>
+        <div class="toggle-link" onclick="toggleAuth()">Already registered? Login</div>
+    </div>
+
+    <script>
+        function toggleTheme() { document.body.classList.toggle('dark-mode'); }
+        function toggleAuth() {
+            const login = document.getElementById('login-box');
+            const reg = document.getElementById('register-box');
+            if(login.style.display === 'none') { login.style.display = 'block'; reg.style.display = 'none'; }
+            else { login.style.display = 'none'; reg.style.display = 'block'; }
+        }
+    </script>
+    <script type="module" src="js/auth.js"></script>
+</body>
+</html>

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Student Dashboard</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+</head>
+<body>
+    <div class="dashboard-nav">
+        <h2>Dashboard</h2>
+        <div>
+            <span class="timer" id="timer">60:00</span>
+            <button class="theme-switch" style="position:relative; top:0; right:0; margin:0 15px;" onclick="toggleTheme()">🌓</button>
+            <button onclick="logout()" style="padding:8px; cursor:pointer; background:#ef4444; color:white; border:none; border-radius:5px;">Logout</button>
+        </div>
+    </div>
+
+    <div class="dashboard-content">
+        <!-- Add Student Form -->
+        <div class="form-section">
+            <h3>Add New Student</h3>
+            <input type="text" id="s-name" placeholder="Student Name" style="width:100%; padding:10px; margin:5px 0;">
+            <input type="text" id="s-father" placeholder="Father's Name" style="width:100%; padding:10px; margin:5px 0;">
+            <input type="text" id="s-mother" placeholder="Mother's Name" style="width:100%; padding:10px; margin:5px 0;">
+            <input type="text" id="s-school" value="Shibli National College" placeholder="School/College Name" style="width:100%; padding:10px; margin:5px 0;">
+            <input type="text" id="s-course" placeholder="Course Name (e.g. BCA)" style="width:100%; padding:10px; margin:5px 0;">
+            <label>Passport Photo (Max 500kb):</label>
+            <input type="file" id="s-image" accept="image/*" style="width:100%; padding:10px; margin:5px 0;">
+            <button id="add-student-btn" style="width:100%; padding:10px; background:var(--primary); color:white; border:none; cursor:pointer; margin-top:10px;">Submit Student Data</button>
+        </div>
+
+        <!-- Student History Table -->
+        <div class="table-section">
+            <h3>Student History</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Course</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="student-list"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Hidden ID Card Template for PDF Generation -->
+    <div id="id-card-template">
+        <!-- Naya Logo Image Path -->
+        <img src="images/default-logo.png" class="logo" alt="Logo">
+        <h3 id="id-school">School Name</h3>
+        <img src="" id="id-photo" class="student-photo">
+        <h2 id="id-name">Name</h2>
+        <p><strong>Father:</strong> <span id="id-father"></span></p>
+        <p><strong>Course:</strong> <span id="id-course"></span></p>
+        <div id="qrcode"></div>
+    </div>
+
+    <script>
+        function toggleTheme() { document.body.classList.toggle('dark-mode'); }
+        function logout() { sessionStorage.removeItem('isLoggedIn'); window.location.href = 'index.html'; }
+    </script>
+    <script type="module" src="js/dashboard.js"></script>
+</body>
+</html>

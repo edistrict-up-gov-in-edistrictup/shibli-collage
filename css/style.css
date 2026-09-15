@@ -1,0 +1,43 @@
+:root {
+    --bg-color: #f3f4f6;
+    --card-bg: #ffffff;
+    --text-color: #1f2937;
+    --primary: #4f46e5;
+    --border: #e5e7eb;
+}
+.dark-mode {
+    --bg-color: #111827;
+    --card-bg: #1f2937;
+    --text-color: #f9fafb;
+    --primary: #6366f1;
+    --border: #374151;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; transition: background 0.3s, color 0.3s; }
+body { background: var(--bg-color); color: var(--text-color); display: flex; flex-direction: column; min-height: 100vh; }
+
+/* Theme Toggle */
+.theme-switch { position: absolute; top: 20px; right: 20px; cursor: pointer; background: var(--primary); color: white; border: none; padding: 10px 15px; border-radius: 8px; font-weight: bold; }
+
+/* Auth Forms */
+.auth-container { max-width: 400px; margin: 100px auto; background: var(--card-bg); padding: 30px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+.auth-container h2 { text-align: center; margin-bottom: 20px; }
+.auth-container input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid var(--border); border-radius: 6px; background: transparent; color: var(--text-color); }
+.auth-container button { width: 100%; padding: 12px; background: var(--primary); color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 16px; margin-top: 10px; }
+.toggle-link { text-align: center; margin-top: 15px; color: var(--primary); cursor: pointer; font-size: 14px; }
+
+/* Dashboard */
+.dashboard-nav { display: flex; justify-content: space-between; align-items: center; padding: 15px 30px; background: var(--card-bg); border-bottom: 1px solid var(--border); }
+.timer { font-weight: bold; color: #ef4444; }
+.dashboard-content { padding: 30px; max-width: 1200px; margin: 0 auto; display: flex; gap: 20px; }
+.form-section, .table-section { background: var(--card-bg); padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); flex: 1; }
+
+table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+th, td { padding: 12px; border-bottom: 1px solid var(--border); text-align: left; }
+.action-btn { padding: 6px 12px; margin: 2px; cursor: pointer; border: none; border-radius: 4px; color: white; font-size: 12px; }
+.btn-delete { background: #ef4444; } .btn-id { background: #10b981; }
+
+/* ID Card Template (Hidden initially) */
+#id-card-template { width: 300px; padding: 20px; background: #fff; border: 2px solid var(--primary); border-radius: 10px; text-align: center; display: none; color: #000; position: absolute; left: -9999px; }
+#id-card-template img.logo { width: 60px; }
+#id-card-template img.student-photo { width: 100px; height: 100px; object-fit: cover; border-radius: 50%; border: 3px solid var(--primary); margin: 10px 0; }
+#qrcode { margin-top: 15px; display: flex; justify-content: center; }
