@@ -1,5 +1,5 @@
 import { db } from "./firebase-config.js";
-import { collection, addDoc, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+import { collection, addDoc, getDocs, query, where } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
 
 // === Math Captcha Logic ===
 let loginCaptchaAnswer = 0;
@@ -11,7 +11,6 @@ function generateCaptcha() {
     document.getElementById('login-captcha-text').innerText = `${num1} + ${num2} =`;
 }
 
-// Page load hone par captcha generate karein
 window.onload = generateCaptcha;
 
 // === REGISTRATION LOGIC ===
@@ -30,40 +29,35 @@ document.getElementById('register-btn').addEventListener('click', async () => {
         return Swal.fire('Error', 'Passwords do not match!', 'error');
     }
 
-    // Check if Mobile Number already exists
-    const usersRef = collection(db, "users");
-    const q = query(usersRef, where("mobile", "==", mobile));
-    const querySnapshot = await getDocs(q);
-
-    if (!querySnapshot.empty) {
-        // Same number se login (register) nahi hoga, Alert aayega
-        return Swal.fire('Alert!', 'This Mobile Number is already registered. Please Login.', 'warning');
-    }
-
-    // Save new user to Firestore
     try {
+        const usersRef = collection(db, "users");
+        const q = query(usersRef, where("mobile", "==", mobile));
+        const querySnapshot = await getDocs(q);
+
+        if (!querySnapshot.empty) {
+            return Swal.fire('Alert!', 'This Mobile Number is already registered. Please Login.', 'warning');
+        }
+
         await addDoc(usersRef, {
             fullName: name,
             dob: dob,
             mobile: mobile,
-            password: pass, // Note: In production, hash passwords. For basic portal, this is fine.
+            password: pass,
             createdAt: new Date()
         });
 
-        // Success Popup
         Swal.fire({
             title: 'Successfully Registered!',
             text: 'You can now login with your mobile number.',
-            icon: 'success',
-            confirmButtonText: 'OK'
+            icon: 'success'
         }).then(() => {
-            // Registration form se login form par switch karein
             document.getElementById('register-box').style.display = 'none';
             document.getElementById('login-box').style.display = 'block';
         });
 
     } catch (error) {
-        Swal.fire('Error', 'Something went wrong. Please try again.', 'error');
+        console.error("Registration Error: ", error);
+        Swal.fire('Error', 'Database error. Check console for details.', 'error');
     }
 });
 
@@ -78,21 +72,25 @@ document.getElementById('login-btn').addEventListener('click', async () => {
     }
 
     if (captchaInput !== loginCaptchaAnswer) {
-        generateCaptcha(); // Wrong captcha par naya generate karein
+        generateCaptcha(); 
         document.getElementById('login-captcha-input').value = '';
         return Swal.fire('Error', 'Wrong Math Captcha!', 'error');
     }
 
-    const usersRef = collection(db, "users");
-    const q = query(usersRef, where("mobile", "==", mobile), where("password", "==", pass));
-    const querySnapshot = await getDocs(q);
+    try {
+        const usersRef = collection(db, "users");
+        const q = query(usersRef, where("mobile", "==", mobile), where("password", "==", pass));
+        const querySnapshot = await getDocs(q);
 
-    if (!querySnapshot.empty) {
-        // Login Success
-        sessionStorage.setItem('isLoggedIn', 'true');
-        window.location.href = 'dashboard.html';
-    } else {
-        generateCaptcha(); // Failed attempt par naya captcha
-        Swal.fire('Error', 'Invalid Mobile Number or Password!', 'error');
+        if (!querySnapshot.empty) {
+            sessionStorage.setItem('isLoggedIn', 'true');
+            window.location.href = 'dashboard.html';
+        } else {
+            generateCaptcha();
+            Swal.fire('Error', 'Invalid Mobile Number or Password!', 'error');
+        }
+    } catch (error) {
+        console.error("Login Error: ", error);
+        Swal.fire('Error', 'Database error during login.', 'error');
     }
 });
