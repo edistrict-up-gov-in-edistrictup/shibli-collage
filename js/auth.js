@@ -1,7 +1,6 @@
 import { db } from "./firebase-config.js";
 import { collection, addDoc, getDocs, query, where } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
 
-// === Math Captcha Logic ===
 let loginCaptchaAnswer = 0;
 
 function generateCaptcha() {
@@ -13,7 +12,7 @@ function generateCaptcha() {
 
 window.onload = generateCaptcha;
 
-// === REGISTRATION LOGIC ===
+// REGISTER
 document.getElementById('register-btn').addEventListener('click', async () => {
     const name = document.getElementById('reg-name').value;
     const dob = document.getElementById('reg-dob').value;
@@ -24,7 +23,6 @@ document.getElementById('register-btn').addEventListener('click', async () => {
     if (!name || !dob || !mobile || !pass || !confirmPass) {
         return Swal.fire('Error', 'Please fill all details!', 'error');
     }
-    
     if (pass !== confirmPass) {
         return Swal.fire('Error', 'Passwords do not match!', 'error');
     }
@@ -39,11 +37,7 @@ document.getElementById('register-btn').addEventListener('click', async () => {
         }
 
         await addDoc(usersRef, {
-            fullName: name,
-            dob: dob,
-            mobile: mobile,
-            password: pass,
-            createdAt: new Date()
+            fullName: name, dob: dob, mobile: mobile, password: pass, createdAt: new Date()
         });
 
         Swal.fire({
@@ -61,7 +55,7 @@ document.getElementById('register-btn').addEventListener('click', async () => {
     }
 });
 
-// === LOGIN LOGIC ===
+// LOGIN
 document.getElementById('login-btn').addEventListener('click', async () => {
     const mobile = document.getElementById('login-mobile').value;
     const pass = document.getElementById('login-password').value;

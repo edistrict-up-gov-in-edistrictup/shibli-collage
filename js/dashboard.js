@@ -1,9 +1,7 @@
 import { db } from "./firebase-config.js";
 import { collection, addDoc, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
 
-if (!sessionStorage.getItem('isLoggedIn')) {
-    window.location.href = 'index.html';
-}
+if (!sessionStorage.getItem('isLoggedIn')) { window.location.href = 'index.html'; }
 
 let timeLeft = 3600; 
 const timerElem = document.getElementById('timer');
@@ -20,7 +18,6 @@ const countdown = setInterval(() => {
     }
 }, 1000);
 
-// === CLOUDINARY IMAGE UPLOAD ===
 async function uploadToCloudinary(file) {
     if (file.size > 500000) {
         Swal.fire('Error', 'Image size must be less than 500KB', 'error');
@@ -36,8 +33,7 @@ async function uploadToCloudinary(file) {
     
     try {
         const response = await fetch('https://api.cloudinary.com/v1_1/przyhc6d/image/upload', {
-            method: 'POST',
-            body: formData
+            method: 'POST', body: formData
         });
         const data = await response.json();
         Swal.close();
@@ -49,7 +45,6 @@ async function uploadToCloudinary(file) {
     }
 }
 
-// === ADD STUDENT DATA ===
 document.getElementById('add-student-btn').addEventListener('click', async () => {
     const btn = document.getElementById('add-student-btn');
     const name = document.getElementById('s-name').value;
@@ -75,7 +70,6 @@ document.getElementById('add-student-btn').addEventListener('click', async () =>
             });
             Swal.fire('Success', 'Student Data Added!', 'success');
             
-            // Clear inputs
             document.getElementById('s-name').value = '';
             document.getElementById('s-father').value = '';
             document.getElementById('s-mother').value = '';
@@ -92,7 +86,6 @@ document.getElementById('add-student-btn').addEventListener('click', async () =>
     btn.disabled = false;
 });
 
-// === LOAD STUDENTS ===
 async function loadStudents() {
     const list = document.getElementById('student-list');
     list.innerHTML = '<tr><td colspan="3">Loading data...</td></tr>';
@@ -119,7 +112,6 @@ async function loadStudents() {
 }
 window.loadStudents = loadStudents;
 
-// === DELETE STUDENT ===
 window.deleteStudent = async (id) => {
     if(confirm("Are you sure you want to delete this student?")) {
         await deleteDoc(doc(db, "students", id));
@@ -127,7 +119,6 @@ window.deleteStudent = async (id) => {
     }
 };
 
-// === PDF & QR GENERATION ===
 window.generateID = (id, data) => {
     document.getElementById('id-name').innerText = data.name;
     document.getElementById('id-school').innerText = data.school;
@@ -141,11 +132,10 @@ window.generateID = (id, data) => {
     const qrContainer = document.getElementById('qrcode');
     qrContainer.innerHTML = "";
     
-    // Yahan Apna actual domain update kar dein
-    const verificationUrl = `https://yourdomain.com/verify.html?id=${id}`; 
+    // YAHAN APNA GITHUB PAGES URL DALEIN (e.g. shaikhmerajahmad.github.io/student-portal/verify.html)
+    const verificationUrl = `https://your-github-username.github.io/student-portal/verify.html?id=${id}`; 
     new QRCode(qrContainer, {
-        text: verificationUrl,
-        width: 100, height: 100
+        text: verificationUrl, width: 100, height: 100
     });
 
     setTimeout(() => {
@@ -161,7 +151,7 @@ window.generateID = (id, data) => {
             pdf.save(`${data.name}_ID_Card.pdf`);
             idCardElement.style.display = 'none'; 
         });
-    }, 1500); // Thoda extra time diya taaki image aur QR load ho jaye
+    }, 1500);
 };
 
 loadStudents();
