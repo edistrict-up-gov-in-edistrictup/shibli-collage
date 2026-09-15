@@ -15,7 +15,7 @@
 * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; transition: background 0.3s, color 0.3s; }
 body { background: var(--bg-color); color: var(--text-color); display: flex; flex-direction: column; min-height: 100vh; }
 
-.theme-switch { position: absolute; top: 20px; right: 20px; cursor: pointer; background: var(--primary); color: white; border: none; padding: 10px 15px; border-radius: 8px; font-weight: bold; z-index: 10; }
+.theme-switch { position: absolute; top: 20px; right: 20px; cursor: pointer; background: var(--primary); color: white; border: none; padding: 10px 15px; border-radius: 8px; font-weight: bold; }
 
 .auth-container { max-width: 400px; margin: 100px auto; background: var(--card-bg); padding: 30px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
 .auth-container h2 { text-align: center; margin-bottom: 20px; }

@@ -132,13 +132,8 @@ window.generateID = (id, data) => {
     const qrContainer = document.getElementById('qrcode');
     qrContainer.innerHTML = "";
     
-    // SMART DYNAMIC URL GENERATOR
-    let currentHref = window.location.href.split('?')[0];
-    let basePath = currentHref.substring(0, currentHref.lastIndexOf("/"));
-    if(basePath === "") { basePath = window.location.origin; }
-    
-    const verificationUrl = `${basePath}/verify.html?id=${id}`; 
-
+    // YAHAN APNA GITHUB PAGES URL DALEIN (e.g. shaikhmerajahmad.github.io/student-portal/verify.html)
+    const verificationUrl = `https://your-github-username.github.io/student-portal/verify.html?id=${id}`; 
     new QRCode(qrContainer, {
         text: verificationUrl, width: 100, height: 100
     });
