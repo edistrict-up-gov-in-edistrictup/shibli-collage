@@ -1,12 +1,10 @@
 import { db } from "./firebase-config.js";
-import { collection, addDoc, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+import { collection, addDoc, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
 
-// Check Login Session
 if (!sessionStorage.getItem('isLoggedIn')) {
     window.location.href = 'index.html';
 }
 
-// 60-Minute Countdown Timer
 let timeLeft = 3600; 
 const timerElem = document.getElementById('timer');
 const countdown = setInterval(() => {
@@ -22,26 +20,36 @@ const countdown = setInterval(() => {
     }
 }, 1000);
 
-// Cloudinary Image Upload
+// === CLOUDINARY IMAGE UPLOAD ===
 async function uploadToCloudinary(file) {
     if (file.size > 500000) {
         Swal.fire('Error', 'Image size must be less than 500KB', 'error');
         return null;
     }
+    
+    Swal.fire({ title: 'Uploading Image...', allowOutsideClick: false });
+    Swal.showLoading();
+
     const formData = new FormData();
     formData.append('file', file);
     formData.append('upload_preset', 'ml_default');
     
-    // Cloudinary details embedded
-    const response = await fetch('https://api.cloudinary.com/v1_1/przyhc6d/image/upload', {
-        method: 'POST',
-        body: formData
-    });
-    const data = await response.json();
-    return data.secure_url;
+    try {
+        const response = await fetch('https://api.cloudinary.com/v1_1/przyhc6d/image/upload', {
+            method: 'POST',
+            body: formData
+        });
+        const data = await response.json();
+        Swal.close();
+        return data.secure_url;
+    } catch (error) {
+        Swal.close();
+        Swal.fire('Error', 'Failed to upload image to Cloudinary.', 'error');
+        return null;
+    }
 }
 
-// Add Student Data
+// === ADD STUDENT DATA ===
 document.getElementById('add-student-btn').addEventListener('click', async () => {
     const btn = document.getElementById('add-student-btn');
     const name = document.getElementById('s-name').value;
@@ -55,7 +63,9 @@ document.getElementById('add-student-btn').addEventListener('click', async () =>
         return Swal.fire('Oops!', 'Please fill all details and select an image.', 'warning');
     }
 
-    btn.innerText = "Uploading & Saving...";
+    btn.innerText = "Uploading...";
+    btn.disabled = true;
+
     const imageUrl = await uploadToCloudinary(imageFile);
     
     if (imageUrl) {
@@ -64,36 +74,52 @@ document.getElementById('add-student-btn').addEventListener('click', async () =>
                 name, father, mother, school, course, photoUrl: imageUrl, timestamp: new Date()
             });
             Swal.fire('Success', 'Student Data Added!', 'success');
-            loadStudents(); // Refresh List
+            
+            // Clear inputs
+            document.getElementById('s-name').value = '';
+            document.getElementById('s-father').value = '';
+            document.getElementById('s-mother').value = '';
+            document.getElementById('s-course').value = '';
+            document.getElementById('s-image').value = '';
+            
+            loadStudents();
         } catch (e) {
-            Swal.fire('Error', 'Database error', 'error');
+            console.error(e);
+            Swal.fire('Error', 'Database error while saving.', 'error');
         }
     }
     btn.innerText = "Submit Student Data";
+    btn.disabled = false;
 });
 
-// Load and display Students
+// === LOAD STUDENTS ===
 async function loadStudents() {
     const list = document.getElementById('student-list');
-    list.innerHTML = '';
-    const querySnapshot = await getDocs(collection(db, "students"));
-    querySnapshot.forEach((docSnap) => {
-        const d = docSnap.data();
-        list.innerHTML += `
-            <tr>
-                <td>${d.name}</td>
-                <td>${d.course}</td>
-                <td>
-                    <button class="action-btn btn-id" onclick='generateID("${docSnap.id}", ${JSON.stringify(d)})'>⬇ ID Card</button>
-                    <button class="action-btn btn-delete" onclick="deleteStudent('${docSnap.id}')">Delete</button>
-                </td>
-            </tr>
-        `;
-    });
+    list.innerHTML = '<tr><td colspan="3">Loading data...</td></tr>';
+    try {
+        const querySnapshot = await getDocs(collection(db, "students"));
+        list.innerHTML = '';
+        querySnapshot.forEach((docSnap) => {
+            const d = docSnap.data();
+            list.innerHTML += `
+                <tr>
+                    <td>${d.name}</td>
+                    <td>${d.course}</td>
+                    <td>
+                        <button class="action-btn btn-id" onclick='generateID("${docSnap.id}", ${JSON.stringify(d).replace(/'/g, "&apos;")})'>⬇ ID Card</button>
+                        <button class="action-btn btn-delete" onclick="deleteStudent('${docSnap.id}')">Delete</button>
+                    </td>
+                </tr>
+            `;
+        });
+    } catch (e) {
+        console.error(e);
+        list.innerHTML = '<tr><td colspan="3">Error loading data.</td></tr>';
+    }
 }
 window.loadStudents = loadStudents;
 
-// Delete Student
+// === DELETE STUDENT ===
 window.deleteStudent = async (id) => {
     if(confirm("Are you sure you want to delete this student?")) {
         await deleteDoc(doc(db, "students", id));
@@ -101,45 +127,41 @@ window.deleteStudent = async (id) => {
     }
 };
 
-// Generate ID Card PDF & QR
+// === PDF & QR GENERATION ===
 window.generateID = (id, data) => {
-    // Fill Template
     document.getElementById('id-name').innerText = data.name;
     document.getElementById('id-school').innerText = data.school;
     document.getElementById('id-father').innerText = data.father;
     document.getElementById('id-course').innerText = data.course;
     
     const photoImg = document.getElementById('id-photo');
-    photoImg.crossOrigin = "Anonymous"; // Fix for html2canvas Cloudinary CORS
+    photoImg.crossOrigin = "Anonymous"; 
     photoImg.src = data.photoUrl;
 
-    // Generate QR Code (Points to GitHub Page verify URL)
     const qrContainer = document.getElementById('qrcode');
     qrContainer.innerHTML = "";
-    // Change domain below to your github pages repo link setup
-    const verificationUrl = `https://your-github-username.github.io/repo/verify.html?id=${id}`; 
+    
+    // Yahan Apna actual domain update kar dein
+    const verificationUrl = `https://yourdomain.com/verify.html?id=${id}`; 
     new QRCode(qrContainer, {
         text: verificationUrl,
         width: 100, height: 100
     });
 
-    // Wait slightly for QR & Image to render then capture PDF
     setTimeout(() => {
         const idCardElement = document.getElementById('id-card-template');
-        idCardElement.style.display = 'block'; // Make visible temporarily
+        idCardElement.style.display = 'block'; 
         
         const { jsPDF } = window.jspdf;
         html2canvas(idCardElement, { useCORS: true, scale: 2 }).then(canvas => {
             const imgData = canvas.toDataURL('image/png');
             const pdf = new jsPDF('p', 'mm', 'a4');
             const pdfWidth = pdf.internal.pageSize.getWidth();
-            // Centering ID card on A4
             pdf.addImage(imgData, 'PNG', (pdfWidth-90)/2, 20, 90, 140);
             pdf.save(`${data.name}_ID_Card.pdf`);
-            idCardElement.style.display = 'none'; // Hide again
+            idCardElement.style.display = 'none'; 
         });
-    }, 1000);
+    }, 1500); // Thoda extra time diya taaki image aur QR load ho jaye
 };
 
-// Initial Load
 loadStudents();
